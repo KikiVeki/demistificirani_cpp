@@ -5,4 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # add_executable(demistificirani_cpp main.cpp oglavlje_4/str_160_sortiranje_niza.cpp)
 #add_executable(demistificirani_cpp oglavlje_4/str_163_bezopasan_primjer_nedozvoljenih_indeksa.cpp)
-add_executable(demistificirani_cpp poglavlje_4/str_167_rjesavanje_sustava_gaussovim_postupkom.cpp)
+#add_executable(demistificirani_cpp poglavlje_4/str_167_rjesavanje_sustava_gaussovim_postupkom.cpp)
+#add_executable(demistificirani_cpp poglavlje_4/str_180_sortiranje_niza_vector.cpp)
+#add_executable(demistificirani_cpp poglavlje_4/str_184_string.cpp)
+add_executable(demistificirani_cpp poglavlje_4/str_189_iteratori.cpp)
