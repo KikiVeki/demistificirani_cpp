@@ -10,7 +10,7 @@ using namespace std;
 int main() {
 
     constexpr int nmax = 100;
-    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\brojevi.txt");
+    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\poglavlje_4\\brojevi.txt");
     if(!ulazni_tok) {
         cerr << "Ne mogu otvoriti traženu datoteku!" << endl;
         return 1;

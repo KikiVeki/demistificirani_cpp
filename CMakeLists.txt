@@ -3,6 +3,6 @@ project(demistificirani_cpp)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# add_executable(demistificirani_cpp main.cpp str_160_sortiranje_niza.cpp)
-#add_executable(demistificirani_cpp str_163_bezopasan_primjer_nedozvoljenih_indeksa.cpp)
-add_executable(demistificirani_cpp str_167_rjesavanje_sustava_gaussovim_postupkom.cpp)
+# add_executable(demistificirani_cpp main.cpp oglavlje_4/str_160_sortiranje_niza.cpp)
+#add_executable(demistificirani_cpp oglavlje_4/str_163_bezopasan_primjer_nedozvoljenih_indeksa.cpp)
+add_executable(demistificirani_cpp poglavlje_4/str_167_rjesavanje_sustava_gaussovim_postupkom.cpp)
