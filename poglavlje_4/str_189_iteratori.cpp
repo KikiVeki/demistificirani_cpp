@@ -28,5 +28,3 @@ int main() {
     cout << broj_parnih << endl;
     return 0;
 }
-
-// poslozi file-ove u datoteke
