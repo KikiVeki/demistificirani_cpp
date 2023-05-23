@@ -11,7 +11,7 @@ using namespace std;
 int main() {
     const int nmax = 20;
     double a[nmax][nmax + 1];
-    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\poglavlje_4\\koeficjenti.txt");
+    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\poglavlje_4_nizovi_podataka\\koeficjenti.txt");
 
     if(!ulazni_tok) {
         cerr << "Ne mogu otvoriti traženu datoteku!" << endl;

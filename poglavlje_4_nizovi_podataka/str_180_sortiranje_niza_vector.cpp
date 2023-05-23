@@ -11,7 +11,7 @@ using namespace std;
 int main() {
 
     int nmax = 100;
-    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\poglavlje_4\\brojevi.txt");
+    ifstream ulazni_tok("C:\\Users\\User\\CLionProjects\\demistificirani_cpp\\poglavlje_4_nizovi_podataka\\brojevi.txt");
     if(!ulazni_tok) {
         cerr << "Ne mogu otvoriti traženu datoteku!" << endl;
         return 1;
