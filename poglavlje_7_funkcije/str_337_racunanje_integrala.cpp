@@ -13,6 +13,15 @@ int main() {
 
     cout << Integral(sin, 0, 3.14159) << endl;
     cout << Integral(Podintegralna, 0, 3.) << endl;
+    cout << Integral([](double x){return 2 * x * x - 3 * x + 2;}, 0,2) << endl;
+    auto parabola = [](auto x){return 2 * x * x - 3 * x + 2;};
+//    double(*parabola)(double) = [](auto x){return 2 * x * x - 3 * x + 2;};
+    cout << Integral(parabola, 0,2) << endl;
+
+    // primjer str 341
+//    auto umnozak = [](double x, double y) {return x * y;};
+    double (*umnozak) (double, double )= [](double x, double y) {return x * y;};
+    cout << umnozak(2,3) << endl;
     return 0;
 }
 
