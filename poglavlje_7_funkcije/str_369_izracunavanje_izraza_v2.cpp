@@ -81,7 +81,7 @@ int main() {
 void UnosLijevihZagrada(const string& izraz, size_t& pozicija,
                         vector<Unos>& unosi, int& broj_otvorenih_zagrada) {
     while (izraz.at(pozicija) == '(') {
-        Unos unos_lijeve_zagrade;
+        Unos unos_lijeve_zagrade{};
         unos_lijeve_zagrade.vrsta = VrstaUnosa::LijevaZagrada;
         unosi.push_back(unos_lijeve_zagrade);
         ++broj_otvorenih_zagrada;
@@ -93,7 +93,7 @@ bool UnosDesnihZagrada(const string& izraz, size_t& pozicija,
                        vector<Unos>& unosi, int& broj_otvorenih_zagrada){
     if(pozicija == string::npos || izraz.at(pozicija) != ')') return false;
     while (pozicija != string::npos && izraz.at(pozicija) == ')') {
-        Unos unos_desne_zagrade;
+        Unos unos_desne_zagrade{};
         unos_desne_zagrade.vrsta = VrstaUnosa::DesnaZagrada;
         unosi.push_back(unos_desne_zagrade);
         --broj_otvorenih_zagrada;
@@ -111,7 +111,7 @@ void UnosBroja(const string& izraz, size_t& pozicija,
                vector<Unos>& unosi){
     size_t broj_znakova;
     double broj = stod(&izraz[pozicija], &broj_znakova);
-    Unos unos_broja;
+    Unos unos_broja{};
     unos_broja.vrsta = VrstaUnosa::Broj;
     unos_broja.broj = broj;
     unosi.push_back(unos_broja);
@@ -121,7 +121,7 @@ void UnosBroja(const string& izraz, size_t& pozicija,
 void UnosOperatora(const string& izraz, size_t& pozicija,
                    vector<Unos>& unosi){
     char operacija = izraz.at(pozicija);
-    Unos unos_operatora;
+    Unos unos_operatora{};
     unos_operatora.vrsta = VrstaUnosa::Operator;
     switch (operacija) {
         case '+':
@@ -185,8 +185,19 @@ double IzracunajIzraz(const vector<Unos>& unosi){
             double rezultat_zagrade = IzracunajIzraz(unutar_zagrade);
             operandi.push_back(rezultat_zagrade);
         }
-        else if (unos.vrsta == VrstaUnosa::){
-
+        else if (unos.vrsta == VrstaUnosa::Broj) {
+            operandi.push_back(unos.broj);
+        }
+        else if (unos.vrsta == VrstaUnosa::Operator){
+            Operator zadnji_operator = unos.operacija;
+            while (!operatori.empty() && (hijerarhija[operatori.back()] >= hijerarhija[zadnji_operator])) {
+                IzracunajOperaciju(operatori, operandi);
+            }
+            operatori.push_back(zadnji_operator);
         }
     }
+    while (!operatori.empty()) {
+        IzracunajOperaciju(operatori, operandi);
+    }
+    return operandi[0];
 }
