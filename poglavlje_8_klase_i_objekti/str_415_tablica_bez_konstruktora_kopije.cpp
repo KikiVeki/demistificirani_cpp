@@ -7,6 +7,7 @@ using namespace std;
 class TablicaSeNeDaKopirati{
     // novo
 public:
+    TablicaSeNeDaKopirati() = default;
     TablicaSeNeDaKopirati(const TablicaSeNeDaKopirati&) = delete;
     TablicaSeNeDaKopirati& operator=(const TablicaSeNeDaKopirati&) = delete;
     // staro

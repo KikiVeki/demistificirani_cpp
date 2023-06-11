@@ -23,9 +23,11 @@ private:
     size_t duljina{podrazumijevna_pocetna_duljina};
     int* elementi{new int[duljina]};
 public:
+    ~Tablica();
     Tablica() {}
     Tablica(size_t pocetna_duljina);
     Tablica(const Tablica& tablica);
+    Tablica(initializer_list<int> lista);
     void PovecajNa(size_t nova_duljina);
     void DodajElement(int novi_element);
     void BrisiElement(size_t pozicija);
@@ -44,6 +46,26 @@ Tablica::Tablica(const Tablica &tablica)
         elementi[i] = tablica.elementi[i];
     }
 }
+
+// str 417
+Tablica::Tablica(initializer_list<int> lista)
+        : elementi{new int[lista.size()]},
+          broj_elemenata{0},
+          duljina{lista.size()}{
+    for (const int& clan: lista) {
+        elementi[broj_elemenata++] = clan;
+    }
+}
+
+// str 422
+Tablica::~Tablica() {
+    delete[] elementi;
+//    elementi = nullptr; // suvisno
+#ifndef NDEBUG
+    cout << "~Tablica()" << endl;
+#endif
+}
+
 
 // primjer 3
 //Tablica::Tablica() : Tablica(podrazumijevna_pocetna_duljina){}
@@ -133,5 +155,7 @@ int main() {
     for (int i = 0; i < t2.BrojElemenata(); ++i) {
         cout << t2.Element(i) << endl;
     }
+
+    Tablica neparni{1, 3, 5, 7, 9};
     return 0;
 }
