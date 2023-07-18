@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <fstream>
+#include <vector>
+
 using namespace std;
 
 enum TipoviPoruka{
@@ -13,10 +16,19 @@ enum TipoviPoruka{
     SvePoruke = Pogreska | Upozoroenje | Info
 };
 
-class DnevnikNaEkran{
+class Dnevnik{
 public:
-    DnevnikNaEkran(TipoviPoruka tip) : maska_poruka(tip) {}
+    virtual ~Dnevnik(){}
+    virtual void Zapisi(const string& tekst, TipoviPoruka tip_poruke = Pogreska) = 0;
+};
+
+class OsnovniDnevnik: public Dnevnik{
+public:
+    OsnovniDnevnik(TipoviPoruka tip) : maska_poruka(tip) {}
+    virtual ~OsnovniDnevnik() {}
     void Zapisi(const string& tekst, TipoviPoruka tip_poruke = Pogreska);
+protected:
+    virtual void Ispljuni(const string& tekst) = 0;
 private:
     TipoviPoruka maska_poruka;
     string Formatiraj(const string& tekst, TipoviPoruka tip_poruke);
@@ -24,12 +36,12 @@ private:
     bool DaLiPrikazati(TipoviPoruka tip_poruke);
 };
 
-void DnevnikNaEkran::Zapisi(const std::string &tekst, TipoviPoruka tip_poruke) {
+void OsnovniDnevnik::Zapisi(const std::string &tekst, TipoviPoruka tip_poruke) {
     if (DaLiPrikazati(tip_poruke))
-        cerr << Formatiraj(tekst, tip_poruke) << endl;
+        Ispljuni(Formatiraj(tekst, tip_poruke));
 }
 
-string DnevnikNaEkran::Formatiraj(const std::string &tekst, TipoviPoruka tip_poruke) {
+string OsnovniDnevnik::Formatiraj(const std::string &tekst, TipoviPoruka tip_poruke) {
     string poruka(DajVrijeme());
     switch (tip_poruke) {
         case Pogreska:
@@ -46,7 +58,7 @@ string DnevnikNaEkran::Formatiraj(const std::string &tekst, TipoviPoruka tip_por
     return poruka;
 }
 
-string DnevnikNaEkran::DajVrijeme() {
+string OsnovniDnevnik::DajVrijeme() {
     char spremnink[80];
     time_t vrijeme;
     time(&vrijeme);
@@ -55,23 +67,96 @@ string DnevnikNaEkran::DajVrijeme() {
     return string(spremnink);
 }
 
-
-bool DnevnikNaEkran::DaLiPrikazati(TipoviPoruka tip_poruke) {
+bool OsnovniDnevnik::DaLiPrikazati(TipoviPoruka tip_poruke) {
     return (maska_poruka & tip_poruke) != 0;
 }
 
 
-DnevnikNaEkran* pok_dnevnik;
+class DnevnikNaEkran: public OsnovniDnevnik{
+public:
+    DnevnikNaEkran(TipoviPoruka maska_za_poruke) : OsnovniDnevnik(maska_za_poruke) {}
+    ~DnevnikNaEkran() {}
+protected:
+    void Ispljuni(const string& poruka) override {
+        cerr << poruka << endl;
+    }
+};
+
+class DnevnikUFajlu: public OsnovniDnevnik{
+private:
+    ofstream izlazni_tok;
+public:
+    DnevnikUFajlu(const string& ime_fajle, TipoviPoruka maska_za_poruke) :
+            OsnovniDnevnik(maska_za_poruke), izlazni_tok(ime_fajle) {}
+    ~DnevnikUFajlu() {izlazni_tok.close();}
+protected:
+    void Ispljuni(const string& poruka) override {
+        izlazni_tok << poruka << endl;
+    }
+};
+
+
+class PrazniDnevnik: public Dnevnik{
+protected:
+    void Zapisi(const string& tekst, TipoviPoruka tip_poruke = Pogreska) override;
+};
+
+
+class ListDnevnika: public Dnevnik{
+private:
+    vector<Dnevnik*> niz_dnevnika;
+public:
+    ~ListDnevnika();
+    void Zapisi(const string& tekst, TipoviPoruka tip_poruke = Pogreska) override;
+    void DodajDnevnik(Dnevnik* dnevnik);
+};
+
+ListDnevnika::~ListDnevnika() noexcept {
+    for (auto dnevnik : niz_dnevnika) {
+        delete dnevnik;
+    }
+}
+
+void ListDnevnika::DodajDnevnik(Dnevnik *dnevnik) {
+    niz_dnevnika.push_back(dnevnik);
+}
+
+void ListDnevnika::Zapisi(const std::string &tekst, TipoviPoruka tip_poruke) {
+    for (auto dnevnik : niz_dnevnika) {
+        dnevnik->Zapisi(tekst, tip_poruke);
+    }
+}
+
+Dnevnik* pok_dnevnik;
 
 void NekaFunkcija() {
     pok_dnevnik->Zapisi("Usao u NekaFunkcija", Info);
 }
 
 int main() {
-    pok_dnevnik = new DnevnikNaEkran(SvePoruke);
+//    cout << "Ispisi na (e)kran ili u (d)atoteku? ";
+//    char ch;
+//    cin >> ch;
+//    switch (ch) {
+//        case 'e':
+//            pok_dnevnik = new DnevnikNaEkran(Pogreska);
+//            break;
+//        case 'd':
+//            pok_dnevnik = new DnevnikUFajlu("Moj.log", SvePoruke);
+//            break;
+//        default:
+//            pok_dnevnik = new PrazniDnevnik();
+//            break;
+//    }
+
+    ListDnevnika* pok_ld = new ListDnevnika();
+    pok_ld->DodajDnevnik(new DnevnikUFajlu("Sve.log", SvePoruke));
+    pok_ld->DodajDnevnik(new DnevnikUFajlu("Pogreske.log", Pogreska));
+    pok_ld->DodajDnevnik(new DnevnikNaEkran(Pogreska));
+
     pok_dnevnik->Zapisi("Usao sam u main()", Info);
     NekaFunkcija();
     pok_dnevnik->Zapisi("Vratio se u main()", Info);
-    delete pok_dnevnik;
+    delete pok_ld;
     return 0;
 }
